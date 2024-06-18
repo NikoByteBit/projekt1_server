@@ -95,7 +95,7 @@ spring.sql.init.mode=always
    mvn spring-boot:run
 ```
 
-****API-Endpunkte****
+# **API-Endpunkte**
 
 **POST /api/events**
 
