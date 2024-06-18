@@ -80,4 +80,19 @@ CREATE TABLE Zeitberechnungen (
 
 3. **Konfigurieren der Anwendung:**
 
+```bash
 Bearbeiten Sie die Datei application.properties mit Ihren Datenbankdetails:
+
+spring.application.name=Projekt1
+spring.datasource.url=jdbc:mysql://localhost:3306/Arbeitszeiterfassung
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.sql.init.mode=always
+```
+4. **Anwendung starten:**
+```bash
+   mvn spring-boot:run
+```
+
+****API-Endpunkte****
