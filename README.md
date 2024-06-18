@@ -111,3 +111,10 @@ Verarbeitet ein Ereignis und speichert es in der Datenbank.
      ```bash
      curl -X POST "http://localhost:8080/api/events" -d "mitarbeiterId=1&terminalId=2&eventType=Eintritt"
      ```
+
+##     Terminals
+Spalte	Typ	Beschreibung
+terminal_id	INT AUTO_INCREMENT	Primärschlüssel
+location	VARCHAR(255)	Standort des Terminals
+type	ENUM	Typ des Terminals
+description	TEXT	Beschreibung
