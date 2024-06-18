@@ -112,9 +112,12 @@ Verarbeitet ein Ereignis und speichert es in der Datenbank.
      curl -X POST "http://localhost:8080/api/events" -d "mitarbeiterId=1&terminalId=2&eventType=Eintritt"
      ```
 
-##     Terminals
-Spalte	Typ	Beschreibung
-terminal_id	INT AUTO_INCREMENT	Primärschlüssel
-location	VARCHAR(255)	Standort des Terminals
-type	ENUM	Typ des Terminals
-description	TEXT	Beschreibung
+## GET /api/arbeitszeiten/{mitarbeiterId}
+Ruft die Arbeitszeitdetails eines Mitarbeiters ab.
+   * **Parameter**:
+        * **mitarbeiterId** (Integer): Die ID des Mitarbeiters
+   * **Beispiel:**
+     ```bash
+     curl -X GET "http://localhost:8080/api/arbeitszeiten/1"
+     ```
+
