@@ -26,6 +26,7 @@ Dieses Projekt ist ein Zeiterfassungssystem, das die Arbeitszeiten und Pausen vo
    ```bash
    git clone <repository-url>
    cd MyProject
+   ```
    
 2. **Datenbank einrichten:**
 
@@ -75,6 +76,7 @@ CREATE TABLE Zeitberechnungen (
     pausenende DATETIME,
     FOREIGN KEY (mitarbeiter_id) REFERENCES Mitarbeiter(mitarbeiter_id)
 );
+```
 
 3. **Konfigurieren der Anwendung:**
 
