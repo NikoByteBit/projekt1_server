@@ -1,10 +1,10 @@
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+package org.projekt1.server.repository;
 
+import org.projekt1.server.model.Zeitberechnungen;
 import java.time.LocalDate;
-import java.util.Optional;
 
-@Repository
-public interface ZeitberechnungenRepository extends JpaRepository<Zeitberechnungen, Integer> {
-    Optional<Zeitberechnungen> findByMitarbeiterIdAndDatum(Integer mitarbeiterId, LocalDate datum);
+public interface ZeitberechnungenRepository {
+    Zeitberechnungen findByMitarbeiterIdAndDatum(Integer mitarbeiterId, LocalDate datum);
+    void save(Zeitberechnungen zeiten);
+    void update(Zeitberechnungen zeiten);
 }
