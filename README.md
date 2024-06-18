@@ -105,4 +105,9 @@ Verarbeitet ein Ereignis und speichert es in der Datenbank.
       * **mitarbeiterId** (Integer): Die ID des Mitarbeiters
       * **terminalId** (Integer): Die ID des Terminals
       * **eventType** (String): Der Typ des Ereignisses (**Eintritt**, **Austritt**, 
-      * **Pausenbeginn**, Pausenende)
+        **Pausenbeginn**, Pausenende)
+
+   * **Beispiel**:
+     ```bash
+     curl -X POST "http://localhost:8080/api/events" -d "mitarbeiterId=1&terminalId=2&eventType=Eintritt"
+     ```
