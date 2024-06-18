@@ -96,3 +96,13 @@ spring.sql.init.mode=always
 ```
 
 ****API-Endpunkte****
+
+**POST /api/events**
+
+Verarbeitet ein Ereignis und speichert es in der Datenbank.
+
+   ***Parameter**:
+      ***mitarbeiterId** (Integer): Die ID des Mitarbeiters
+      ***terminalId** (Integer): Die ID des Terminals
+      ***eventType** (String): Der Typ des Ereignisses (**Eintritt**, **Austritt**, 
+      ***Pausenbeginn**, Pausenende)
