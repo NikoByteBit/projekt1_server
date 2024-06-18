@@ -76,3 +76,6 @@ CREATE TABLE Zeitberechnungen (
     FOREIGN KEY (mitarbeiter_id) REFERENCES Mitarbeiter(mitarbeiter_id)
 );
 
+3. **Konfigurieren der Anwendung:**
+
+Bearbeiten Sie die Datei application.properties mit Ihren Datenbankdetails:
