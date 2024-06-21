@@ -3,7 +3,10 @@ package org.projekt1.server.controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.projekt1.server.model.Mitarbeiter;
 import org.projekt1.server.service.EreignisService;
+import org.projekt1.server.service.MitarbeiterService;
 import org.projekt1.server.service.MitarbeiterZeitService;
 
 @RestController
@@ -12,14 +15,15 @@ public class ZeiterfassungController {
 
     private final EreignisService ereignisService;
     private final MitarbeiterZeitService mitarbeiterZeitService;
+    private final MitarbeiterService mitarbeiterService;
 
     @Autowired
-    public ZeiterfassungController(EreignisService ereignisService, MitarbeiterZeitService mitarbeiterZeitService) {
+    public ZeiterfassungController(EreignisService ereignisService, MitarbeiterZeitService mitarbeiterZeitService, MitarbeiterService mitarbeiterService) {
         this.ereignisService = ereignisService;
         this.mitarbeiterZeitService = mitarbeiterZeitService;
+        this.mitarbeiterService = mitarbeiterService;
     }
 
-    // Endpoint to handle event processing
     @PostMapping("/events")
     public ResponseEntity<?> verarbeiteEreignis(@RequestParam Integer mitarbeiterId, @RequestParam Integer terminalId, @RequestParam String eventType) {
         try {
@@ -30,7 +34,28 @@ public class ZeiterfassungController {
         }
     }
 
-    // Endpoint to fetch work time details
+    @GetMapping("/arbeitszeiten/{mitarbeiterId}")
+    public ResponseEntity<?> getArbeitszeiten(@PathVariable Integer mitarbeiterId, Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            Mitarbeiter requester = mitarbeiterService.findByUsername(username);
+
+            if (requester.getMitarbeiterId().equals(mitarbeiterId) || requester.isAbteilungsleiter()) {
+                var zeiten = mitarbeiterZeitService.getArbeitszeiten(mitarbeiterId);
+                return ResponseEntity.ok(zeiten);
+            } else {
+                return ResponseEntity.status(403).body("Zugriff verweigert");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}
+
+
+
+// Endpoint to fetch work time details ohne login
+    /*
     @GetMapping("/arbeitszeiten/{mitarbeiterId}")
     public ResponseEntity<?> getArbeitszeiten(@PathVariable Integer mitarbeiterId) {
         try {
@@ -40,7 +65,9 @@ public class ZeiterfassungController {
             return ResponseEntity.internalServerError().build();
         }
     }
-}
+    */
+
+
 
 /*
 //Zeiterfassungscontroller mit terminalverwaltung

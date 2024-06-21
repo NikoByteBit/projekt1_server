@@ -23,7 +23,7 @@ public class ZeitberechnungenJdbcRepository implements ZeitberechnungenRepositor
             Zeitberechnungen zeiten = new Zeitberechnungen();
             zeiten.setZeitId(rs.getInt("zeit_id"));
             zeiten.setMitarbeiterId(rs.getInt("mitarbeiter_id"));
-            zeiten.setArbeitsbeginn(rs.getTimestamp("arbeitsbeginn") != null ? rs.getTimestamp("arbeitsbeginn").toLocalDateTime() : null);
+            zeiten.setArbeitsbeginn(rs.getTimestamp("arbeitsbeginn").toLocalDateTime());
             zeiten.setArbeitsende(rs.getTimestamp("arbeitsende") != null ? rs.getTimestamp("arbeitsende").toLocalDateTime() : null);
             zeiten.setPausenbeginn(rs.getTimestamp("pausenbeginn") != null ? rs.getTimestamp("pausenbeginn").toLocalDateTime() : null);
             zeiten.setPausenende(rs.getTimestamp("pausenende") != null ? rs.getTimestamp("pausenende").toLocalDateTime() : null);

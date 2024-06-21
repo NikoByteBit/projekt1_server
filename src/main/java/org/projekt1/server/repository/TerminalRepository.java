@@ -25,6 +25,8 @@ public class TerminalRepository {
             terminal.setLocation(rs.getString("location"));
             terminal.setType(rs.getString("type"));
             terminal.setDescription(rs.getString("description"));
+            terminal.setConnectedRoomA(rs.getString("connected_room_a"));
+            terminal.setConnectedRoomB(rs.getString("connected_room_b"));
             return terminal;
         }
     }
