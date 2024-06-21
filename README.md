@@ -35,47 +35,106 @@ Erstellen Sie eine MySQL-Datenbank mit dem Namen Arbeitszeiterfassung und führe
 ```bash
 -- Skript zum Erstellen der Datenbankstrukturen für das Zeiterfassungssystem
 
--- Erstellen der Terminals Tabelle
-CREATE TABLE Terminals (
-    terminal_id INT AUTO_INCREMENT PRIMARY KEY,
-    location VARCHAR(255) NOT NULL,
-    type ENUM('Eingang', 'Ausgang', 'Pausenraum') NOT NULL,
-    description TEXT
-);
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
--- Erstellen der Mitarbeiter Tabelle
-CREATE TABLE Mitarbeiter (
-    mitarbeiter_id INT AUTO_INCREMENT PRIMARY KEY,
-    vorname VARCHAR(50),
-    nachname VARCHAR(50),
-    abteilung VARCHAR(100),
-    rolle ENUM('Mitarbeiter', 'Abteilungsleiter') NOT NULL
-);
+-- -----------------------------------------------------
+-- Schema Arbeitszeiterfassung
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `Arbeitszeiterfassung` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `Arbeitszeiterfassung` ;
 
--- Erstellen der Ereignisse Tabelle
-CREATE TABLE Ereignisse (
-    ereignis_id INT AUTO_INCREMENT PRIMARY KEY,
-    mitarbeiter_id INT,
-    terminal_id INT,
-    event_type ENUM('Eintritt', 'Austritt', 'Pausenbeginn', 'Pausenende'),
-    timestamp DATETIME,
-    FOREIGN KEY (mitarbeiter_id) REFERENCES Mitarbeiter(mitarbeiter_id),
-    FOREIGN KEY (terminal_id) REFERENCES Terminals(terminal_id)
-);
+-- -----------------------------------------------------
+-- Table `Arbeitszeiterfassung`.`Mitarbeiter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Arbeitszeiterfassung`.`Mitarbeiter` ;
 
--- Erstellen der Zeitberechnungen Tabelle
-CREATE TABLE Zeitberechnungen (
-    zeit_id INT AUTO_INCREMENT PRIMARY KEY,
-    mitarbeiter_id INT,
-    arbeitsbeginn DATETIME,
-    arbeitsende DATETIME,
-    gesamtarbeitszeit TIME,
-    gesamtpausenzeit TIME,
-    datum DATE,
-    pausenbeginn DATETIME,
-    pausenende DATETIME,
-    FOREIGN KEY (mitarbeiter_id) REFERENCES Mitarbeiter(mitarbeiter_id)
-);
+CREATE TABLE IF NOT EXISTS `Arbeitszeiterfassung`.`Mitarbeiter` (
+                                                                    `mitarbeiter_id` INT NOT NULL AUTO_INCREMENT,
+                                                                    `vorname` VARCHAR(50) NULL DEFAULT NULL,
+    `nachname` VARCHAR(50) NULL DEFAULT NULL,
+    `abteilung` VARCHAR(100) NULL DEFAULT NULL,
+    `rolle` ENUM('Mitarbeiter', 'Abteilungsleiter') NOT NULL,
+    PRIMARY KEY (`mitarbeiter_id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- Modifying the Mitarbeiter table to add username and password columns
+ALTER TABLE `Arbeitszeiterfassung`.`Mitarbeiter`
+    ADD COLUMN `username` VARCHAR(50) NOT NULL,
+ADD COLUMN `password` VARCHAR(100) NOT NULL,
+ADD UNIQUE (`username`);
+
+-- -----------------------------------------------------
+-- Table `Arbeitszeiterfassung`.`Terminals`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Arbeitszeiterfassung`.`Terminals` ;
+
+CREATE TABLE IF NOT EXISTS `Arbeitszeiterfassung`.`Terminals` (
+                                                                  `terminal_id` INT NOT NULL AUTO_INCREMENT,
+                                                                  `location` VARCHAR(255) NOT NULL,
+    `description` TEXT NULL DEFAULT NULL,
+    `connected_room_a` VARCHAR(255) NULL DEFAULT NULL,
+    `type` ENUM('Eingang', 'Ausgang', 'Pausenraum', 'Zwischenraum') NOT NULL,
+    `connected_room_b` VARCHAR(255) NULL DEFAULT NULL,
+    PRIMARY KEY (`terminal_id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `Arbeitszeiterfassung`.`Ereignisse`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Arbeitszeiterfassung`.`Ereignisse` ;
+
+CREATE TABLE IF NOT EXISTS `Arbeitszeiterfassung`.`Ereignisse` (
+                                                                   `ereignis_id` INT NOT NULL AUTO_INCREMENT,
+                                                                   `mitarbeiter_id` INT NULL DEFAULT NULL,
+                                                                   `terminal_id` INT NULL DEFAULT NULL,
+                                                                   `event_type` ENUM('Eintritt', 'Austritt', 'Pausenbeginn', 'Pausenende') NULL DEFAULT NULL,
+    `timestamp` DATETIME NULL DEFAULT NULL,
+    PRIMARY KEY (`ereignis_id`),
+    INDEX `mitarbeiter_id` (`mitarbeiter_id` ASC) VISIBLE,
+    INDEX `terminal_id` (`terminal_id` ASC) VISIBLE,
+    CONSTRAINT `Ereignisse_ibfk_1`
+    FOREIGN KEY (`mitarbeiter_id`)
+    REFERENCES `Arbeitszeiterfassung`.`Mitarbeiter` (`mitarbeiter_id`),
+    CONSTRAINT `Ereignisse_ibfk_2`
+    FOREIGN KEY (`terminal_id`)
+    REFERENCES `Arbeitszeiterfassung`.`Terminals` (`terminal_id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `Arbeitszeiterfassung`.`Zeitberechnungen`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Arbeitszeiterfassung`.`Zeitberechnungen` ;
+
+CREATE TABLE IF NOT EXISTS `Arbeitszeiterfassung`.`Zeitberechnungen` (
+                                                                         `zeit_id` INT NOT NULL AUTO_INCREMENT,
+                                                                         `mitarbeiter_id` INT NULL DEFAULT NULL,
+                                                                         `arbeitsbeginn` DATETIME NULL DEFAULT NULL,
+                                                                         `arbeitsende` DATETIME NULL DEFAULT NULL,
+                                                                         `gesamtarbeitszeit` TIME NULL DEFAULT NULL,
+                                                                         `gesamtpausenzeit` TIME NULL DEFAULT NULL,
+                                                                         `datum` DATE NULL DEFAULT NULL,
+                                                                         `pausenbeginn` DATETIME NULL DEFAULT NULL,
+                                                                         `pausenende` DATETIME NULL DEFAULT NULL,
+                                                                         PRIMARY KEY (`zeit_id`),
+    INDEX `mitarbeiter_id` (`mitarbeiter_id` ASC) VISIBLE,
+    CONSTRAINT `Zeitberechnungen_ibfk_1`
+    FOREIGN KEY (`mitarbeiter_id`)
+    REFERENCES `Arbeitszeiterfassung`.`Mitarbeiter` (`mitarbeiter_id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 ```
 
 3. **Konfigurieren der Anwendung:**
