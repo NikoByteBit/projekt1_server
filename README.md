@@ -30,7 +30,7 @@ Dieses Projekt ist ein Zeiterfassungssystem, das die Arbeitszeiten und Pausen vo
    
 2. **Datenbank einrichten:**
 
-Erstellen Sie eine MySQL-Datenbank mit dem Namen Arbeitszeiterfassung und führen Sie das schema.sql-Skript aus:
+Sql-Skript für die erstellung des Schemas Arbeitszeiterfassung in MySQL:
 
 ```bash
 -- Skript zum Erstellen der Datenbankstrukturen für das Zeiterfassungssystem
